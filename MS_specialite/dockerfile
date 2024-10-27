@@ -1,0 +1,4 @@
+FROM openjdk:8
+EXPOSE 8083
+ADD target/MS-Specialite-0.0.1-SNAPSHOT.jar specialite-img.jar
+ENTRYPOINT ["java", "-jar", "specialite-img.jar"]

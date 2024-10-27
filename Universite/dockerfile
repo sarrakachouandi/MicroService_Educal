@@ -1,0 +1,4 @@
+FROM openjdk:8
+EXPOSE 8084
+ADD target/Universite-0.0.1-SNAPSHOT.jar Universite.jar
+ENTRYPOINT ["java", "-jar", "Universite.jar"]

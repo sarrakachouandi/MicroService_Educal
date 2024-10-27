@@ -1,0 +1,8 @@
+
+[	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(ÃÔ÷ý
+[	java:S1126"FDefine and throw a dedicated exception instead of using a generic one.(ÃÔ÷ý
+[	java:S112>"FDefine and throw a dedicated exception instead of using a generic one.(Žƒþˆ
+h
+java:S22592"RA "NullPointerException" could be thrown; "getOriginalFilename()" can return null.(¡€ð¡
+`
+java:S1128"JRemove this unused import 'org.springframework.core.io.ByteArrayResource'.(Ã¤Ê¾

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Universite" />
+        <module name="EurekaD" />
+        <module name="Foyer" />
+        <module name="MS-Specialite" />
+        <module name="Event-MS" />
+        <module name="GestionChambre" />
+        <module name="RestaurantMs" />
+        <module name="ApiGateway" />
+        <module name="Educal-News" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ApiGateway" options="-parameters" />
+      <module name="Educal-News" options="-parameters" />
+      <module name="EurekaD" options="-parameters" />
+      <module name="Event-MS" options="-parameters" />
+      <module name="Foyer" options="-parameters" />
+      <module name="GestionChambre" options="-parameters" />
+      <module name="MS-Specialite" options="-parameters" />
+      <module name="RestaurantMs" options="-parameters" />
+      <module name="Universite" options="-parameters" />
+    </option>
+  </component>
+</project>

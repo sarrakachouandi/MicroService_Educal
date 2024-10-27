@@ -1,0 +1,184 @@
+version: "3.9"
+services:
+  universite:
+    build: .\Universite
+    image: "universite-img"
+    container_name: universite
+    ports:
+      - "8084:8084"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/universite?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    restart: unless-stopped
+    depends_on:
+      - eureka
+      - mysql-db
+
+  foyer:
+    build: .\Foyer
+    image: "foyer-img"
+    container_name: foyer
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+    restart: unless-stopped
+    depends_on:
+      - eureka
+
+  restaurant:
+    build: .\restaurant
+    image: "restaurant-img"
+    container_name: restaurant
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+    restart: unless-stopped
+    depends_on:
+      - eureka
+
+  chambre:
+    build: .\GestionChambre
+    image: "chambre-img"
+    container_name: chambre
+    ports:
+      - "8091:8091"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+    restart: unless-stopped
+    depends_on:
+      - eureka
+
+  club-node:
+    build:
+      context: .\MS_club
+      dockerfile: dockerfile
+    image: "club-img"
+    container_name: "club-node"
+    ports:
+      - "3000:3000"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=discovery
+      - app_file_storage_mapping=file:/app/upload-directory
+    restart: unless-stopped
+    depends_on:
+      - eureka
+
+  event:
+    build: .\Event_MS
+    image: "event-img"
+    container_name: event
+    ports:
+      - "8087:8087"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/event?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    restart: unless-stopped
+    depends_on:
+      - eureka
+      - mysql-db
+
+  specialite:
+    build: .\MS_specialite
+    image: "specialite-img"
+    container_name: specialite
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/MS-Specialite?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    restart: unless-stopped
+    depends_on:
+      - eureka
+      - mysql-db
+
+  news:
+    build: .\Educal-news
+    image: news
+    container_name: news
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/educal_news?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    restart: unless-stopped
+    depends_on:
+      - eureka
+      - mysql-db
+
+  eureka:
+    build: .\EurekaD
+    image: "eureka-img"
+    container_name: "eureka"
+    ports:
+      - "8761:8761"
+    hostname: discovery
+
+  gateway:
+    build: .\ApiGateway
+    image: "gateway-img"
+    container_name: "gateway"
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - spring_cloud_gateway_routes[0]_id=universite
+      - spring_cloud_gateway_routes[0]_uri=http://universite:8084
+      - spring_cloud_gateway_routes[0]_predicates[0]=Path=/universite/**
+
+      - spring_cloud_gateway_routes[1]_id=specialite
+      - spring_cloud_gateway_routes[1]_uri=http://specialite:8083
+      - spring_cloud_gateway_routes[1]_predicates[0]=Path=/specialites/**
+
+      - spring_cloud_gateway_routes[2]_id=foyer
+      - spring_cloud_gateway_routes[2]_uri=http://foyer:8081
+      - spring_cloud_gateway_routes[2]_predicates[0]=Path=/Foyer/**
+
+      - spring_cloud_gateway_routes[3]_id=chambre
+      - spring_cloud_gateway_routes[3]_uri=http://chambre:8091
+      - spring_cloud_gateway_routes[3]_predicates[0]=Path=/Chambre/**
+
+      - spring_cloud_gateway_routes[4]_id=event
+      - spring_cloud_gateway_routes[4]_uri=http://event:8087
+      - spring_cloud_gateway_routes[4]_predicates[0]=Path=/event/**
+
+      - spring_cloud_gateway_routes[5]_id=restaurant
+      - spring_cloud_gateway_routes[5]_uri=http://restaurant:8090
+      - spring_cloud_gateway_routes[5]_predicates[0]=Path=/restaurants/**
+
+      - spring_cloud_gateway_routes[6]_id=news
+      - spring_cloud_gateway_routes[6]_uri=http://news:8085
+      - spring_cloud_gateway_routes[6]_predicates[0]=Path=/news/**
+
+      - spring_cloud_gateway_routes[7]_id=club
+      - spring_cloud_gateway_routes[7]_uri=http://club-node:3000
+      - spring_cloud_gateway_routes[7]_predicates[0]=Path=/clubs/**
+    depends_on:
+      - eureka
+      - universite
+      - chambre
+      - club-node
+      - event
+      - foyer
+      - news
+      - restaurant
+      - specialite
+
+  mysql-db:
+    image: "mysql:5.6"
+    container_name: "mysql-db"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root #indisponsable pour la conteneurisation
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+
